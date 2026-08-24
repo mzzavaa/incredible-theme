@@ -1182,3 +1182,19 @@ a.card:hover { border-color: var(--rule-accent); background: var(--surface-high)
   letter-spacing: .16em;
 }
 .spec .prose { color: var(--text-muted); max-width: none; }
+
+/* ── Imprint ──────────────────────────────────────────────────────────
+   Legal disclosure. Dense, scannable, and readable rather than styled.
+   Headings are small labels, not display type: this page is consulted,
+   not read through.                                                     */
+.imprint h2 {
+  font-family: var(--font-body);
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--accent);
+  margin-block: var(--s-6) var(--s-2);
+}
+.imprint h2:first-of-type { margin-top: var(--s-4); }
+.imprint p { max-width: 68ch; }

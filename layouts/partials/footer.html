@@ -21,9 +21,14 @@
       <ul class="footer__family">
         {{ range $site.family }}<li><a href="{{ .url }}" rel="external">{{ .name }}</a></li>{{ end }}
       </ul>
-      <div>{{ now.Year }} Incredible {{ $site.sublabel }} &middot;
-        <a href="/legal/imprint/">Imprint</a> &middot;
-        <a href="/legal/privacy/">Privacy</a>
+      {{/* Legal links render only when the page exists. A footer link to a
+           missing imprint or privacy notice is worse than no link: it looks
+           like the obligation was met when it was not. */}}
+      <div>{{ now.Year }} Incredible {{ $site.sublabel }}
+        {{- with .Site.GetPage "/legal/imprint" }} &middot;
+        <a href="{{ .RelPermalink }}">Impressum</a>{{ end }}
+        {{- with .Site.GetPage "/legal/privacy" }} &middot;
+        <a href="{{ .RelPermalink }}">Privacy</a>{{ end }}
       </div>
     </div>
   </div>
