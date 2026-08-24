@@ -1,0 +1,42 @@
+{{/*
+  nav.html  ·  transparent over the hero, solid on scroll.
+  The right cluster has deliberate room for a language switcher. See the
+  bilingual open question: retrofitting DE/EN must not require redrawing
+  this component.
+*/}}
+{{- $site := hugo.Data.site -}}
+<header class="nav" data-nav>
+  <div class="container nav__inner">
+    {{ partial "wordmark.html" (dict "ctx" . "size" "sm") }}
+
+    <nav aria-label="Primary">
+      <ul class="nav__links">
+        {{ range .Site.Menus.main }}
+        <li>
+          <a class="nav__link" href="{{ .URL }}"
+             {{ if $.IsMenuCurrent "main" . }}aria-current="page"{{ end }}>{{ .Name }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+
+    {{/* Language switcher slot. Empty while the sites are monolingual. */}}
+    {{ if gt (len hugo.Sites) 1 }}
+      <ul class="nav__links nav__links--lang">
+        {{ range .Translations }}<li><a class="nav__link" href="{{ .Permalink }}">{{ .Language.Lang | upper }}</a></li>{{ end }}
+      </ul>
+    {{ end }}
+
+    <a class="btn btn--outline nav__cta" href="{{ $site.booking_url }}" rel="external">{{ $site.primary_cta }}</a>
+
+    <button class="nav__burger" data-nav-burger aria-expanded="false"
+            aria-controls="nav-drawer" aria-label="Open menu">
+      {{ partial "icon.html" (dict "name" "menu" "class" "icon") }}
+    </button>
+  </div>
+</header>
+
+<div class="nav__drawer" id="nav-drawer" data-nav-drawer>
+  {{ range .Site.Menus.main }}<a class="nav__link" href="{{ .URL }}">{{ .Name }}</a>{{ end }}
+  <a class="btn btn--primary" style="margin-top:1.5rem" href="{{ $site.booking_url }}" rel="external">{{ $site.primary_cta }}</a>
+</div>

@@ -1,0 +1,21 @@
+{{/*
+  guild-row.html  ·  SIGNATURE. Thin gold line icons, letterspaced caps.
+  Never in a filled tile. Stroke weight comes from components.css.
+
+  variant "row"  compact strip under the hero
+  variant "grid" cards with a descriptor paragraph
+
+  Looks correct at four entries and at eight. Do not add a min-count guard.
+
+  {{ partial "guild-row.html" (dict "items" hugo.Data.guilds "variant" "row") }}
+*/}}
+{{- $variant := .variant | default "row" -}}
+<div class="{{ if eq $variant "grid" }}guild-grid{{ else }}guild-row{{ end }}">
+  {{ range .items }}
+  <a class="guild" href="{{ .url }}">
+    {{ partial "icon.html" (dict "name" .key "class" "guild__icon") }}
+    <span class="guild__label">{{ .label }}</span>
+    {{ with .desc }}<span class="guild__desc">{{ . }}</span>{{ end }}
+  </a>
+  {{ end }}
+</div>

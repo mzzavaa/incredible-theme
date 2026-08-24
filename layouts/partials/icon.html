@@ -1,0 +1,10 @@
+{{/*
+  icon.html  ·  inline SVG, never an icon font, never an emoji.
+  Stroke weight is enforced in components.css, not here, so no caller can
+  pass a heavier stroke.
+
+  {{ partial "icon.html" (dict "name" "cloud" "class" "guild__icon") }}
+*/}}
+{{- $name := .name -}}
+{{- $class := .class | default "icon" -}}
+<span class="{{ $class }}">{{ partial (printf "icons/%s.svg" $name) . | safeHTML }}</span>

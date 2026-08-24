@@ -1,0 +1,20 @@
+{{/*
+  process-steps.html  ·  SIGNATURE. 01 to 04 in gold serif with hairline
+  connectors. Connectors are drawn on the step, so 2, 3, 5 or 6 steps all
+  work without editing CSS. Stacks with the numeral inline below 620px.
+
+  Consumed by: consulting home, method-phase, training learning-path.
+
+  {{ partial "process-steps.html" (dict "items" hugo.Data.process) }}
+*/}}
+<ol class="process">
+  {{ range $i, $s := .items }}
+  <li class="process__step">
+    <span class="process__num">{{ printf "%02d" (add $i 1) }}</span>
+    <div>
+      <div class="process__title">{{ $s.title }}</div>
+      <p class="process__desc">{{ $s.desc }}</p>
+    </div>
+  </li>
+  {{ end }}
+</ol>

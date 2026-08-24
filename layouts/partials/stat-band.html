@@ -1,0 +1,19 @@
+{{/*
+  stat-band.html  ·  SIGNATURE. Gold serif numeral over a letterspaced label.
+  'source' names the engagement the metric comes from. It is required: a
+  metric that cannot be traced to a named engagement does not ship.
+  Set "show_source" false on profile stat bands where the label is enough.
+
+  Consumed by: consulting home proof band, Master profile, case studies.
+
+  {{ partial "stat-band.html" (dict "items" hugo.Data.results "show_source" true) }}
+*/}}
+<div class="stat-band">
+  {{ range .items }}
+  <div class="stat">
+    <span class="stat__num">{{ .value }}</span>
+    <span class="stat__label">{{ .label }}</span>
+    {{ if and $.show_source .source }}<span class="stat__source">{{ .source }}</span>{{ end }}
+  </div>
+  {{ end }}
+</div>

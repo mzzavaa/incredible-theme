@@ -1,0 +1,25 @@
+{{/*
+  section-header.html  ·  gold eyebrow plus the two-line serif heading.
+  Consumed by: every archetype on all six sites.
+
+  {{ partial "section-header.html" (dict
+       "eyebrow" "Our Guilds" "line1" "Deep expertise."
+       "line2" "Across every layer of technology."
+       "aside" "..." "link_url" "/services/" "link_text" "Explore all guilds") }}
+*/}}
+<div class="section-header{{ if .wide }} section-header--wide{{ end }}">
+  <div class="section-header__text">
+    {{ with .eyebrow }}<span class="eyebrow">{{ . }}</span>{{ end }}
+    <h2>
+      {{ .line1 }}
+      {{ with .line2 }}<span class="display__line-2{{ if $.italic }} display__line-2--italic{{ end }}">{{ . }}</span>{{ end }}
+    </h2>
+  </div>
+  {{ if or .aside .link_url }}
+  <div class="section-header__aside">
+    {{ with .aside }}<p>{{ . }}</p>{{ end }}
+    {{ with .link_url }}<a class="btn btn--text" href="{{ . }}">{{ $.link_text }}
+      {{ partial "icon.html" (dict "name" "arrow-right" "class" "btn__arrow") }}</a>{{ end }}
+  </div>
+  {{ end }}
+</div>

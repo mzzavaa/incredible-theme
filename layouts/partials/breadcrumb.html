@@ -1,0 +1,25 @@
+{{/*
+  breadcrumb.html  ·  ancestor trail. The CSS for .breadcrumb shipped with the
+  design system but the partial did not, so this fills that gap.
+
+  Renders nothing on the homepage and nothing when there is only one ancestor,
+  because a trail of one is noise. Middle dot separator, per house style.
+
+  {{ partial "breadcrumb.html" . }}
+*/}}
+{{- $trail := slice -}}
+{{- range .Ancestors.Reverse -}}
+  {{- if not .IsHome -}}{{- $trail = $trail | append . -}}{{- end -}}
+{{- end -}}
+
+{{- if $trail -}}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ "/" | relURL }}">Home</a>
+  {{- range $trail }}
+  <span aria-hidden="true">&middot;</span>
+  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  {{- end }}
+  <span aria-hidden="true">&middot;</span>
+  <span aria-current="page">{{ .Title }}</span>
+</nav>
+{{- end -}}

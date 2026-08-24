@@ -1,0 +1,73 @@
+{{/*
+  home.html  ·  the theme default homepage.
+
+  Deliberately generic, so a site gets a working, on-brand homepage the moment
+  it has content. Any site with a richer homepage overrides this by placing its
+  own layouts/home.html in the site directory, which is what
+  incredible-consulting.com does.
+
+  Everything is defensive. A site with only a title and a description still
+  renders something deliberate, because most of them start that way.
+*/}}
+{{ define "main" }}
+{{- $h := .Params.hero -}}
+
+{{/* 1. Hero. Falls back to the page title when no hero block is set. */}}
+{{ partial "hero.html" (dict
+     "ctx"     .
+     "eyebrow" (or (and $h $h.eyebrow) .Site.Params.tagline)
+     "line1"   (or (and $h $h.line_1) .Title)
+     "line2"   (and $h $h.line_2)
+     "italic"  (and $h $h.line_2_italic)
+     "lede"    (or (and $h $h.lede) .Description)
+     "image"   (and $h $h.image)) }}
+
+{{/* 2. What this site holds. One card per top-level section, ordered by weight. */}}
+{{ $sections := where .Site.Sections "Params.hidden" "!=" true }}
+{{ with $sections }}
+<section class="section">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+         "eyebrow" (or $.Params.sections_eyebrow "On this site")
+         "line1"   (or $.Params.sections_line_1 "What you will find here.")) }}
+    <div class="card-grid">
+      {{ range . }}
+      <a class="card" href="{{ .RelPermalink }}">
+        <div class="card__body">
+          <span class="card__title">{{ .Title }}</span>
+          {{ with .Description }}<p class="meta">{{ . }}</p>{{ end }}
+          {{ $n := len .RegularPages }}
+          {{ if $n }}<span class="chip chip--bare">{{ $n }} page{{ if ne $n 1 }}s{{ end }}</span>{{ end }}
+        </div>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{/* 3. The rest of the family. Every site routes to its siblings. */}}
+{{ with hugo.Data.site }}
+{{ with .family }}
+<section class="section--sm section--ruled">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+         "eyebrow" "The group"
+         "line1"   "Six domains,"
+         "line2"   "one job each."
+         "italic"  true) }}
+    <div class="chip-row">
+      {{ range . }}<a class="chip chip--accent" href="{{ .url }}" rel="external">{{ .name }}</a>{{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+{{ end }}
+
+{{/* 4. Closing invitation. */}}
+{{ partial "cta-band.html" (dict
+     "ctx"   .
+     "line1" (or .Params.cta_line_1 hugo.Data.site.cta_line_1 "The right expertise.")
+     "line2" (or .Params.cta_line_2 hugo.Data.site.cta_line_2 "Assembled for your challenge.")) }}
+
+{{ end }}

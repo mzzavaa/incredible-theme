@@ -1,0 +1,23 @@
+{{- $tokens := resources.Get "css/tokens.css" -}}
+{{- $base   := resources.Get "css/base.css" -}}
+{{- $comp   := resources.Get "css/components.css" -}}
+{{- $css    := slice $tokens $base $comp | resources.Concat "css/incredible.css" | minify | fingerprint -}}
+
+{{- $serif  := resources.Get "fonts/Newsreader[opsz,wght].woff2" -}}
+{{- $inter  := resources.Get "fonts/Inter[wght].woff2" -}}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{/* Self-hosted, preloaded, font-display swap. No layout shift, no CDN. */}}
+{{- with $serif }}<link rel="preload" as="font" type="font/woff2" href="{{ .RelPermalink }}" crossorigin>{{ end }}
+{{- with $inter }}<link rel="preload" as="font" type="font/woff2" href="{{ .RelPermalink }}" crossorigin>{{ end }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
+
+{{ template "_internal/opengraph.html" . }}

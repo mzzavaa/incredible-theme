@@ -1,0 +1,12 @@
+{{/*
+  logo-wall.html  ·  flat off-white marks, no boxes.
+  Holds four to eight and still reads as deliberate with three, because
+  display permissions are unresolved. Falls back to set names when a mark
+  cannot be shown.
+
+  {{ partial "logo-wall.html" (dict "items" .Params.logos) }}
+*/}}
+{{- $n := len .items -}}
+<div class="logo-wall{{ if lt $n 4 }} logo-wall--sparse{{ end }}">
+  {{ range .items }}<span class="logo-wall__item">{{ . }}</span>{{ end }}
+</div>

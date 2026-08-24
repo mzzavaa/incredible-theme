@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Incredible Consulting">
+  <rect width="240" height="240" fill="#0A0A0B"></rect>
+  <text x="120" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="21" font-weight="300" letter-spacing="7.2" fill="#F2EFE9" dx="3.6">INCREDIBLE</text>
+  <rect x="52" y="132" width="136" height="1" fill="#B8925A" opacity=".55"></rect>
+  <text x="120" y="154" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="400" letter-spacing="9" fill="#B8925A" dx="4.5">CONSULTING</text>
+</svg>

@@ -1,0 +1,21 @@
+{{/*
+  case-study-card.html  ·  the OUTCOME sentence outranks client, sector and
+  technology, in the card and in the page header. That ordering is
+  deliberate and must not be rearranged.
+
+  Consumed by: consulting home, case-study-index, Master profile.
+
+  {{ partial "case-study-card.html" (dict "page" $p) }}
+*/}}
+{{- $p := .page -}}
+<a class="case-card" href="{{ $p.RelPermalink }}">
+  <div class="case-card__media">
+    {{ partial "image-slot.html" (dict "src" $p.Params.image "ratio" "case" "alt" "" "note" "Documentary, real world, graded dark and warm") }}
+  </div>
+  <div class="case-card__body">
+    <span class="case-card__outcome">{{ $p.Params.outcome | default $p.Title }}</span>
+    <div class="case-card__meta">
+      <span class="case-card__client">{{ $p.Params.client }}</span>{{ with $p.Params.industry }} &middot; {{ . }}{{ end }}
+    </div>
+  </div>
+</a>

@@ -1,0 +1,18 @@
+{{/*
+  wordmark.html  ·  INCREDIBLE plus the sub-label that identifies the sibling.
+  The sub-label is the family mechanism. It comes from data/site.yaml, never
+  from a hardcoded string, because six sites share this theme.
+
+  {{ partial "wordmark.html" (dict "ctx" . "size" "lg" "bare" false) }}
+*/}}
+{{- $ctx := .ctx | default . -}}
+{{- $sub := hugo.Data.site.sublabel -}}
+{{- $mods := "" -}}
+{{- if eq .size "lg" }}{{ $mods = printf "%s wordmark--lg" $mods }}{{ end -}}
+{{- if .bare }}{{ $mods = printf "%s wordmark--bare" $mods }}{{ end -}}
+{{- if .gold }}{{ $mods = printf "%s wordmark--gold" $mods }}{{ end -}}
+<a class="wordmark{{ $mods }}" href="{{ "/" | relLangURL }}" aria-label="Incredible {{ $sub }}, home">
+  <span class="wordmark__name">Incredible</span>
+  <span class="wordmark__rule" aria-hidden="true"></span>
+  <span class="wordmark__sub">{{ $sub }}</span>
+</a>

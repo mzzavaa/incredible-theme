@@ -1,0 +1,91 @@
+{{/*
+  list.html  ·  the section-hub archetype. Covers 36 pages across all six
+  sites, more than any other single template.
+
+  Two constraints from the audit, both load-bearing:
+  1. It must not look starved at three children or crowded at six. The grid is
+     auto-fit, and drops to the wide variant at two or fewer so a pair does not
+     read as a broken row. NOTE: at five children the last card still sits alone
+     on a second row at wide viewports. Acceptable, not solved.
+  2. It must degrade to a plain ruled list when children carry no metadata.
+     That is why the description block is guarded rather than assumed.
+
+  Consumed by: section-hub on every site, collection-index, artifact-catalogue.
+*/}}
+{{ define "main" }}
+
+{{ partial "hero.html" (dict
+     "eyebrow" .Params.eyebrow
+     "line1"   .Title
+     "line2"   .Params.headline_2
+     "italic"  true
+     "lede"    (.Params.lede | default .Description)
+     "image"   .Params.image
+     "plain"   true
+     "ctx"     .) }}
+
+<section class="section">
+  <div class="container">
+
+    {{ partial "breadcrumb.html" . }}
+
+    {{/* Page briefs are specs for a later copy pass, not visitor-facing text.
+         They render in development so the spec is visible while building, and
+         are omitted from production builds. Replace the brief with real copy
+         and it renders normally in both. */}}
+    {{ with .Content }}
+      {{ if hugo.IsProduction }}
+        {{ if not (strings.Contains . "<strong>Purpose.</strong>") }}
+        <div class="prose">{{ . }}</div>
+        {{ end }}
+      {{ else }}
+        <div class="spec">
+          <span class="spec__label">Page brief, not published copy</span>
+          <div class="prose">{{ . }}</div>
+        </div>
+      {{ end }}
+    {{ end }}
+
+    {{ $children := .RegularPages }}
+    {{ if $children }}
+    <div class="card-grid{{ if le (len $children) 2 }} card-grid--wide{{ end }}">
+      {{ range $children }}
+      <a class="card" href="{{ .RelPermalink }}">
+        <div class="card__body">
+          {{ with .Params.eyebrow }}<span class="eyebrow">{{ . }}</span>{{ end }}
+          <span class="card__title">{{ .Title }}</span>
+          {{ with .Description }}<p class="meta">{{ . }}</p>{{ end }}
+
+          {{/* Per-child metadata differs by section: contact children carry a
+               response time, trust children a review cadence, legal children a
+               jurisdiction. Render whichever exists, or nothing. */}}
+          {{ $badge := or .Params.status_label .Params.response_time .Params.review_cycle .Params.jurisdiction .Params.duration }}
+          {{ with $badge }}<span class="chip chip--bare">{{ . }}</span>{{ end }}
+        </div>
+      </a>
+      {{ end }}
+    </div>
+    {{ else }}
+    <div class="empty">
+      <p class="empty__title">Nothing published in this section yet.</p>
+      <p class="meta">The pages are specified and not yet written.</p>
+    </div>
+    {{ end }}
+
+    {{/* Nested sections, listed separately so they are not mistaken for leaves. */}}
+    {{ $subsections := .Sections }}
+    {{ with $subsections }}
+    <div class="chip-row">
+      {{ range . }}<a class="chip chip--accent" href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
+    </div>
+    {{ end }}
+
+  </div>
+</section>
+
+{{ partial "cta-band.html" (dict
+     "ctx"   .
+     "line1" (or hugo.Data.site.cta_line_1 "The right expertise.")
+     "line2" (or hugo.Data.site.cta_line_2 "Assembled for your challenge.")) }}
+
+{{ end }}

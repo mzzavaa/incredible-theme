@@ -1,0 +1,27 @@
+{{/*
+  image-slot.html  ·  a SPECIFIED slot, not a grey box.
+  Renders the photograph when one exists and the written specification when
+  one does not, so the gap stays visible and gets filled deliberately.
+
+  ratio: hero 16:9 | portrait 4:5 | case 3:2
+  Grading, every slot: dark, warm, single light source. Architectural,
+  astronomical or geological. Never cool, never neutral, never stock people.
+
+  {{ partial "image-slot.html" (dict "src" .Params.image "ratio" "case"
+       "alt" .Title "note" "Documentary, graded dark and warm" "scrim" true) }}
+*/}}
+{{- $ratio := .ratio | default "case" -}}
+{{- $img := "" -}}
+{{- with .src }}{{ $img = resources.Get . }}{{ end -}}
+<figure class="img-slot img-slot--{{ $ratio }}">
+  {{ with $img }}
+  {{- $w := cond (eq $ratio "portrait") "720x" "1200x" -}}
+  {{- $r := .Resize (printf "%s webp q76" $w) -}}
+  <img src="{{ $r.RelPermalink }}" width="{{ $r.Width }}" height="{{ $r.Height }}"
+       alt="{{ $.alt }}" loading="{{ $.loading | default "lazy" }}" decoding="async">
+  {{ else }}
+  <span class="img-slot__spec">{{ $ratio }} &middot; {{ cond (eq $ratio "portrait") "4:5" (cond (eq $ratio "hero") "16:9" "3:2") }}</span>
+  <span class="img-slot__note">{{ $.note | default "Dark, warm, single light source" }}</span>
+  {{ end }}
+  {{ if .scrim }}<span class="img-slot__scrim" aria-hidden="true"></span>{{ end }}
+</figure>

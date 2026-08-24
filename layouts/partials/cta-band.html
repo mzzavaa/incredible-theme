@@ -1,0 +1,25 @@
+{{/*
+  cta-band.html  ·  the closing invitation.
+  Every booking path is an outbound handoff to an external booking page.
+  There is no cart and no checkout anywhere in this system. The external
+  arrow is appended by base.css, not by markup.
+
+  {{ partial "cta-band.html" (dict "ctx" . "line1" "..." "line2" "..." "aside" "...") }}
+*/}}
+{{- $site := hugo.Data.site -}}
+<section class="cta-band">
+  <div class="container cta-band__inner">
+    <div class="cta-band__text">
+      <h2>{{ .line1 }}
+        {{ with .line2 }}<span class="display__line-2 display__line-2--italic">{{ . }}</span>{{ end }}
+      </h2>
+    </div>
+    <div>
+      {{ with .aside }}<p class="cta-band__aside" style="margin-bottom:1.5rem">{{ . }}</p>{{ end }}
+      <a class="btn btn--primary" href="{{ $site.booking_url }}" rel="external">
+        {{ $site.primary_cta }}
+        {{ partial "icon.html" (dict "name" "arrow-right" "class" "btn__arrow") }}
+      </a>
+    </div>
+  </div>
+</section>

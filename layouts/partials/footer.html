@@ -1,0 +1,30 @@
+{{- $site := hugo.Data.site -}}
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        {{ partial "wordmark.html" (dict "ctx" . "size" "lg") }}
+        <p class="footer__strapline">{{ or $site.strapline .Site.Params.description }}</p>
+      </div>
+
+      {{ range .Site.Menus.footer }}
+      <div>
+        <div class="footer__col-title">{{ .Name }}</div>
+        <ul class="footer__list">
+          {{ range .Children }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
+        </ul>
+      </div>
+      {{ end }}
+    </div>
+
+    <div class="footer__base">
+      <ul class="footer__family">
+        {{ range $site.family }}<li><a href="{{ .url }}" rel="external">{{ .name }}</a></li>{{ end }}
+      </ul>
+      <div>{{ now.Year }} Incredible {{ $site.sublabel }} &middot;
+        <a href="/legal/imprint/">Imprint</a> &middot;
+        <a href="/legal/privacy/">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>

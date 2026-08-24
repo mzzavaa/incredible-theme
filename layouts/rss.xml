@@ -1,0 +1,38 @@
+{{- /*
+  rss.xml  ·  overrides Hugo's built-in feed.
+
+  The built-in template embeds .Content, which would publish page briefs
+  (Purpose / Contains / Primary CTA / Links to) to anyone subscribing. Briefs
+  are specs for a later copy pass, not visitor-facing text, so this feed
+  carries the description only.
+
+  When real copy replaces the briefs, this can move back to .Content or a
+  .Summary if a fuller feed is wanted.
+*/ -}}
+{{- $pages := .RegularPages -}}
+{{- $limit := .Site.Config.Services.RSS.Limit -}}
+{{- if ge $limit 1 -}}{{- $pages = $pages | first $limit -}}{{- end -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ if not .IsHome }}{{ with .Title }}{{ . }} on {{ end }}{{ end }}{{ .Site.Title }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>{{ .Description | default .Site.Params.description }}</description>
+    <generator>Hugo</generator>
+    <language>{{ .Site.Language.Locale }}</language>
+    {{- with .OutputFormats.Get "rss" }}
+    {{ printf `<atom:link href=%q rel="self" type=%q/>` .Permalink .MediaType | safeHTML }}
+    {{- end }}
+    {{- range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <guid>{{ .Permalink }}</guid>
+      {{- with .Date }}{{ if not .IsZero }}
+      <pubDate>{{ .Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{- end }}{{ end }}
+      <description>{{ .Description }}</description>
+    </item>
+    {{- end }}
+  </channel>
+</rss>

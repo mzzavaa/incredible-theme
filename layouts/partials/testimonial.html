@@ -1,0 +1,9 @@
+{{/*
+  testimonial.html  ·  italic serif, large gold quote mark.
+  {{ partial "testimonial.html" (dict "text" "..." "cite" "Role, Sector") }}
+*/}}
+<figure class="quote">
+  <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+  <blockquote class="quote__text">{{ .text }}</blockquote>
+  <figcaption class="quote__cite">{{ .cite }}</figcaption>
+</figure>

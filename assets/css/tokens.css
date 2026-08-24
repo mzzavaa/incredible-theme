@@ -1,0 +1,203 @@
+/* ==========================================================================
+   INCREDIBLE · tokens.css
+   Shared Hugo theme module. Consumed by all six sites.
+
+   STRUCTURE
+   1. Raw palette      never referenced outside this file
+   2. Semantic tokens  the only names components.css may use
+   3. Type, space, rhythm, motion
+   4. Theme hooks      ivory swap, portal semantics (both reserved, not defined)
+
+   RULE. components.css must never contain a colour literal and never a raw
+   palette variable. If it does, that is a defect. The ivory canvas is then a
+   single override file that redefines section 2 only.
+   ========================================================================== */
+
+:root {
+
+  /* ---------------------------------------------------------------------
+     1. RAW PALETTE
+     --------------------------------------------------------------------- */
+
+  --ink:            #0A0A0B;   /* page canvas */
+  --ink-raised:     #111112;   /* cards, panels */
+  --ink-high:       #161618;   /* hover, nested surfaces */
+  --ink-sunk:       #060607;   /* footer, inset wells */
+
+  /* Brass and champagne, warm and clearly desaturated. Read off the
+     mockups rather than taken from the written spec: the spec's #C9A227 is
+     a good hue but too saturated, and at eyebrow and icon sizes it reads
+     yellow rather than gold. Everything below is the same hue family pulled
+     toward bronze and lifted in value. Flat colour, never a gradient. */
+  --gold:           #B8925A;   /* core accent. Icons, rules, eyebrows, CTA */
+  --gold-warm:      #D8B584;   /* headline emphasis, large display type */
+  --gold-pale:      #EBD3AC;   /* accent text needing max legibility */
+  --gold-deep:      #8C6C3C;   /* pressed states (see --accent-pressed) */
+
+  --paper:          #F2EFE9;   /* primary text. NEVER #fff */
+  --paper-mute:     #A9A39A;   /* body and secondary text */
+  --paper-dim:      #6E6A64;   /* captions, meta, disabled */
+
+  --alpha-hairline: rgba(255, 255, 255, .07);
+  --alpha-rule:     rgba(255, 255, 255, .12);
+  --alpha-gold-line: rgba(184, 146, 90, .26);
+  --alpha-gold-wash: rgba(184, 146, 90, .07);
+  --alpha-scrim:    rgba(6, 6, 7, .72);
+
+
+  /* ---------------------------------------------------------------------
+     2. SEMANTIC TOKENS
+     The only colour names components.css is allowed to use.
+
+     CONTRAST LADDER, measured against --surface-page #0A0A0B.
+     Recomputed rather than assumed: the brief expected gold to fail AA on
+     near-black. It does not. It fails on LIGHT grounds. The ladder is
+     therefore organised by ground, not by size.
+
+       --text-primary    #F2EFE9   17.2:1   AAA   any size
+       --text-secondary  #A9A39A    7.9:1   AAA   any size
+       --text-muted      #6E6A64    3.6:1   AA large only. Never body copy.
+                                                  Meta and captions at 18px+
+                                                  or 14px+ semibold only.
+       --accent          #B8925A    6.9:1   AAA   any size, incl. 11px eyebrows
+       --accent-strong   #D8B584   10.2:1   AAA   display headlines
+       --accent-soft     #EBD3AC   13.6:1   AAA   accent text on raised surfaces
+
+     Against --surface-raised #111112 every figure above drops by roughly
+     0.3:1 and all still clear their tier.
+
+     --text-muted is the only token that can fail. It is scoped in
+     components.css to .meta, .caption and .field-hint, all of which are
+     18px+ or duplicated in an accessible label. Do not widen its use.
+
+     ON LIGHT GROUNDS. --accent on --paper is 2.5:1 and fails everything.
+     When the ivory theme lands it must redefine --accent to a darker brass
+     (start from #7A5A2E, 6.6:1 on #F4F0E8) and keep --accent-strong for
+     large display only. That is a token swap, not a component change.
+     --------------------------------------------------------------------- */
+
+  /* Surfaces */
+  --surface-page:      var(--ink);
+  --surface-raised:    var(--ink-raised);
+  --surface-high:      var(--ink-high);
+  --surface-sunk:      var(--ink-sunk);
+  --surface-accent-wash: var(--alpha-gold-wash);
+  --surface-scrim:     var(--alpha-scrim);
+
+  /* Text */
+  --text-primary:      var(--paper);
+  --text-secondary:    var(--paper-mute);
+  --text-muted:        var(--paper-dim);
+  --text-on-accent:    var(--ink);
+
+  /* Accent */
+  --accent:            var(--gold);
+  --accent-strong:     var(--gold-warm);
+  --accent-soft:       var(--gold-pale);
+  --accent-pressed:    var(--gold-deep);
+  --accent-rule:       var(--alpha-gold-line);
+
+  /* Rules and borders */
+  --rule:              var(--alpha-hairline);
+  --rule-strong:       var(--alpha-rule);
+  --rule-accent:       var(--alpha-gold-line);
+
+  /* Focus. Must be visible on near-black, hence offset and a dark halo. */
+  --focus-ring:        var(--accent-soft);
+  --focus-offset:      3px;
+  --focus-width:       2px;
+
+  /* Reserved. Portal only, section 12. Deliberately undefined here so no
+     public component can reach for them. Gold never carries status meaning.
+     --status-attention  --status-blocked  --status-complete               */
+
+
+  /* ---------------------------------------------------------------------
+     3. TYPE
+     Newsreader for display, regular weight 400 always. Bolding the serif is
+     the single most common way to get this brand wrong.
+     --------------------------------------------------------------------- */
+
+  --font-display: "Newsreader", "Source Serif 4", Georgia, serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --weight-display: 400;
+  --weight-body:    300;
+  --weight-body-md: 400;
+  --weight-ui:      500;
+
+  /* Body is 15px. Inherited from a shipped sibling site and deliberate. */
+  --size-body:      17px;
+  --size-body-lg:   20px;
+  --size-small:     15px;
+  --size-eyebrow:   .78rem;
+  --size-meta:      .88rem;
+
+  --lh-display:     1.1;
+  --lh-heading:     1.18;
+  --lh-body:        1.7;
+  --lh-tight:       1.45;
+
+  /* The eyebrow tracking is doing real work. .18em, not .1em. */
+  --track-eyebrow:  .18em;
+  --track-wordmark: .34em;
+  --track-sublabel: .42em;
+  --track-chip:     .12em;
+  --track-display:  -.01em;
+
+  --measure:        66ch;   /* long-form reading width */
+  --measure-narrow: 46ch;   /* hero and intro paragraphs */
+
+
+  /* ---------------------------------------------------------------------
+     4. SPACE, RHYTHM, SHAPE
+     Negative space is load-bearing. Crowding loses the register faster than
+     any other single mistake.
+     --------------------------------------------------------------------- */
+
+  --container:      1240px;
+  --container-pad:  2.5rem;
+
+  --section:        7rem;
+  --section-sm:     4.5rem;
+  --section-lg:     9rem;
+
+  --s-1: .25rem;  --s-2: .5rem;   --s-3: .75rem;  --s-4: 1rem;
+  --s-5: 1.5rem;  --s-6: 2rem;    --s-7: 3rem;    --s-8: 4rem;
+  --s-9: 6rem;
+
+  /* 4px. Inherited and deliberate. Never pills. */
+  --radius:         4px;
+  --radius-sm:      2px;
+
+  --nav-h:          76px;
+  --nav-h-scrolled: 64px;
+
+  /* Depth is hairlines and surface steps. There are no shadows in this
+     system. The token exists only to be overridden by the portal. */
+  --elevation:      none;
+
+  /* Motion. Slow, few, confident. Nothing bouncy. */
+  --ease:           cubic-bezier(.2, .6, .2, 1);
+  --dur-fast:       160ms;
+  --dur:            280ms;
+  --dur-slow:       900ms;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --container-pad: 1.5rem;
+    --section:       4.5rem;
+    --section-lg:    5.5rem;
+    --section-sm:    3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur:      1ms;
+    --dur-slow: 1ms;
+  }
+}

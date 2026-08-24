@@ -1,0 +1,54 @@
+{{/*
+  hero.html  ·  SIGNATURE. The two-line gold headline.
+  Line one warm off-white, line two gold, often italic.
+
+  When "image" is empty the CSS-only atmosphere renders instead: near-black,
+  one off-centre radial gold glow, fine grain. That fallback is designed to
+  launch with, not to be replaced in a hurry.
+
+  Consumed by: home, section-hub, capability-detail, brand-router.
+
+  {{ partial "hero.html" (dict
+       "eyebrow" .Params.hero.eyebrow
+       "line1"   .Params.hero.line_1
+       "line2"   .Params.hero.line_2
+       "italic"  .Params.hero.line_2_italic
+       "lede"    .Params.hero.lede
+       "image"   .Params.hero.image
+       "ctx"     .) }}
+*/}}
+{{- $ctx := .ctx -}}
+{{- $site := hugo.Data.site -}}
+{{- $img := "" -}}
+{{- with .image }}{{ $img = resources.Get . }}{{ end -}}
+
+<section class="hero{{ if not $img }} hero--atmos{{ end }}">
+  {{ with $img }}
+  {{- $sm := .Resize "900x webp q72" -}}
+  {{- $lg := .Resize "1920x webp q76" -}}
+  <div class="hero__media">
+    <img src="{{ $lg.RelPermalink }}"
+         srcset="{{ $sm.RelPermalink }} 900w, {{ $lg.RelPermalink }} 1920w"
+         sizes="100vw" width="{{ $lg.Width }}" height="{{ $lg.Height }}"
+         alt="" fetchpriority="high" decoding="async">
+  </div>
+  {{ end }}
+
+  <div class="container hero__inner">
+    <div class="hero__body">
+      {{ with $.eyebrow }}<span class="eyebrow">{{ . }}</span>{{ end }}
+      <h1 class="hero__title">
+        {{ $.line1 }}
+        <span class="display__line-2{{ if $.italic }} display__line-2--italic{{ end }}">{{ $.line2 }}</span>
+      </h1>
+      {{ with $.lede }}<p class="lede hero__lede">{{ . }}</p>{{ end }}
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="{{ $site.booking_url }}" rel="external">
+          {{ $site.primary_cta }}
+          {{ partial "icon.html" (dict "name" "arrow-right" "class" "btn__arrow") }}
+        </a>
+        <a class="btn btn--text" href="/philosophy/">Why we exist</a>
+      </div>
+    </div>
+  </div>
+</section>

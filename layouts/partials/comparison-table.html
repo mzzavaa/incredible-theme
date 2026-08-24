@@ -1,0 +1,25 @@
+{{/*
+  comparison-table.html  ·  SIGNATURE. Traditional Consulting vs INCREDIBLE.
+
+  Below 640px the columns stack PER ROW, so each pair stays adjacent. It is
+  deliberately not a scroll box: the comparison is the content, and a
+  horizontal scrollbar hides half of it. The data-col attributes carry the
+  column labels into the stacked view.
+
+  Consumed by: consulting home; training for-teams vs for-individuals.
+
+  {{ partial "comparison-table.html" (dict "data" hugo.Data.comparison "ctx" .) }}
+*/}}
+{{- $d := .data -}}
+<div class="compare">
+  <div class="compare__head">
+    <div class="compare__head-them">{{ $d.heading_them }}</div>
+    <div class="compare__head-us">{{ partial "wordmark.html" (dict "ctx" .ctx "bare" true "gold" true) }}</div>
+  </div>
+  {{ range $d.rows }}
+  <div class="compare__row">
+    <div class="compare__them" data-col="{{ $d.heading_them }}">{{ .them }}</div>
+    <div class="compare__us" data-col="Incredible">{{ .us }}</div>
+  </div>
+  {{ end }}
+</div>

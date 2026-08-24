@@ -1,0 +1,105 @@
+{{/*
+  page.html  ·  the prose archetype. Covers 44 pages portfolio-wide and is the
+  single highest-leverage typographic surface in the system.
+
+  Reads the page brief body plus whatever typed front matter the page carries.
+  Every key is optional: a page with only title and description must still look
+  deliberate, because most of them start that way.
+
+  Consumed by: capability-detail, narrative-explainer, reference-doc,
+  practice-doc, programme-explainer, prose-reference.
+*/}}
+{{ define "main" }}
+
+{{ partial "hero.html" (dict
+     "eyebrow" (.Params.eyebrow | default (cond .CurrentSection.IsHome "" .CurrentSection.Title))
+     "line1"   .Title
+     "line2"   .Params.headline_2
+     "italic"  true
+     "lede"    (.Params.lede | default .Description)
+     "image"   .Params.image
+     "plain"   true
+     "ctx"     .) }}
+
+<section class="section">
+  <div class="container container--narrow">
+
+    {{ partial "breadcrumb.html" . }}
+
+    {{/* Typed keys, rendered only when present. Order is deliberate:
+         the outcome outranks client, sector and technology. */}}
+    {{ if or .Params.outcome .Params.client .Params.status_label }}
+    <div class="meta-row">
+      {{ with .Params.outcome }}<span class="case-card__outcome">{{ . }}</span>{{ end }}
+      {{ with .Params.client }}<span class="meta">{{ . }}</span>{{ end }}
+      {{ with .Params.industry }}<span class="meta">{{ . }}</span>{{ end }}
+      {{ with .Params.status_label }}<span class="chip chip--accent">{{ . }}</span>{{ end }}
+    </div>
+    {{ end }}
+
+    {{/* Page briefs are specs for a later copy pass, not visitor-facing text.
+         They render in development so the spec is visible while building, and
+         are omitted from production builds. Replace the brief with real copy
+         and it renders normally in both. */}}
+    {{ with .Content }}
+      {{ if hugo.IsProduction }}
+        {{ if not (strings.Contains . "<strong>Purpose.</strong>") }}
+        <div class="prose">{{ . }}</div>
+        {{ end }}
+      {{ else }}
+        <div class="spec">
+          <span class="spec__label">Page brief, not published copy</span>
+          <div class="prose">{{ . }}</div>
+        </div>
+      {{ end }}
+    {{ end }}
+
+    {{/* Technology and discipline chips. */}}
+    {{ with (or .Params.tech .Params.disciplines .Params.formats) }}
+    <div class="chip-row">
+      {{ range . }}<span class="chip">{{ . }}</span>{{ end }}
+    </div>
+    {{ end }}
+
+    {{/* Reference metadata, used heavily on consulting.org artefacts. */}}
+    {{ if or .Params.version .Params.maturity .Params.licence .Params.effort }}
+    <div class="meta-row">
+      {{ with .Params.version }}<span class="chip chip--bare">Version {{ . }}</span>{{ end }}
+      {{ with .Params.maturity }}<span class="chip chip--bare">{{ . }}</span>{{ end }}
+      {{ with .Params.effort }}<span class="chip chip--bare">{{ . }}</span>{{ end }}
+      {{ with .Params.licence }}<span class="chip chip--bare">{{ . }}</span>{{ end }}
+      {{ with .Lastmod }}<span class="meta">Last reviewed {{ .Format "2 January 2006" }}</span>{{ end }}
+    </div>
+    {{ end }}
+
+  </div>
+</section>
+
+{{/* Sibling pages in the same section, so a leaf is never a dead end. */}}
+{{ $siblings := where .CurrentSection.RegularPages "Permalink" "!=" .Permalink }}
+{{ with $siblings }}
+<section class="section--sm section--ruled">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+         "eyebrow" "Also in this section"
+         "line1"   $.CurrentSection.Title) }}
+    <div class="card-grid">
+      {{ range first 3 . }}
+      <a class="card" href="{{ .RelPermalink }}">
+        <div class="card__body">
+          <span class="card__title">{{ .Title }}</span>
+          <p class="meta">{{ .Description }}</p>
+        </div>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ partial "cta-band.html" (dict
+     "ctx"   .
+     "line1" (or hugo.Data.site.cta_line_1 "The right expertise.")
+     "line2" (or hugo.Data.site.cta_line_2 "Assembled for your challenge.")) }}
+
+{{ end }}
