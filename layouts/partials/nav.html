@@ -5,6 +5,24 @@
   this component.
 */}}
 {{- $site := hugo.Data.site -}}
+
+{{/* ACTIVE ITEM. Hugo's IsMenuCurrent cannot help here: it can only match a
+     menu entry that was defined with pageRef, and every site in this family
+     defines its menus with `url`, so it returns false on every page. Comparing
+     paths ourselves also gives the behaviour a section nav actually wants,
+     which is that Guilds stays lit on /services/ai-and-agents/ and not only on
+     /services/ itself.
+
+     Prefix matching is guarded against "/", which would otherwise light the
+     home entry on every page, and against external URLs, which never match. */}}
+{{- $here := .RelPermalink -}}
+{{- $active := dict -}}
+{{- range .Site.Menus.main -}}
+  {{- $u := .URL -}}
+  {{- $on := or (eq $here $u) (and (ne $u "/") (hasPrefix $u "/") (hasPrefix $here $u)) -}}
+  {{- $active = merge $active (dict $u $on) -}}
+{{- end -}}
+
 <header class="nav" data-nav>
   <div class="container nav__inner">
     {{ partial "wordmark.html" (dict "ctx" . "size" "sm") }}
@@ -14,7 +32,7 @@
         {{ range .Site.Menus.main }}
         <li>
           <a class="nav__link" href="{{ .URL }}"
-             {{ if $.IsMenuCurrent "main" . }}aria-current="page"{{ end }}>{{ .Name }}</a>
+             {{ if index $active .URL }}aria-current="page"{{ end }}>{{ .Name }}</a>
         </li>
         {{ end }}
       </ul>
@@ -37,6 +55,7 @@
 </header>
 
 <div class="nav__drawer" id="nav-drawer" data-nav-drawer>
-  {{ range .Site.Menus.main }}<a class="nav__link" href="{{ .URL }}">{{ .Name }}</a>{{ end }}
+  {{ range .Site.Menus.main }}<a class="nav__link" href="{{ .URL }}"
+    {{- if index $active .URL }} aria-current="page"{{ end }}>{{ .Name }}</a>{{ end }}
   <a class="btn btn--primary" style="margin-top:1.5rem" href="{{ $site.booking_url }}" rel="external">{{ $site.primary_cta }}</a>
 </div>

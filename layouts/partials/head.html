@@ -21,3 +21,15 @@
 <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
 
 {{ template "_internal/opengraph.html" . }}
+
+{{/* Social card. One param drives the hero and the share image, unless a page
+     sets social_image to override it, which is what the statement images with
+     baked-in wording are for. Falls back to the site default in data/site.yaml.
+     JPEG rather than WebP: several platforms still refuse WebP previews. */}}
+{{- $social := resources.Get (or .Params.social_image .Params.image hugo.Data.site.social_image) -}}
+{{- with $social }}{{ $card := .Resize "1200x jpeg q82" }}
+<meta property="og:image" content="{{ $card.Permalink }}">
+<meta property="og:image:width" content="{{ $card.Width }}">
+<meta property="og:image:height" content="{{ $card.Height }}">
+<meta name="twitter:card" content="summary_large_image">
+{{ end -}}

@@ -15,8 +15,9 @@
 {{- with .src }}{{ $img = resources.Get . }}{{ end -}}
 <figure class="img-slot img-slot--{{ $ratio }}">
   {{ with $img }}
-  {{- $w := cond (eq $ratio "portrait") "720x" "1200x" -}}
-  {{- $r := .Resize (printf "%s webp q76" $w) -}}
+  {{- $target := cond (eq $ratio "portrait") 720 1200 -}}
+  {{- $w := int (math.Min $target .Width) -}}
+  {{- $r := .Resize (printf "%dx webp q88" $w) -}}
   <img src="{{ $r.RelPermalink }}" width="{{ $r.Width }}" height="{{ $r.Height }}"
        alt="{{ $.alt }}" loading="{{ $.loading | default "lazy" }}" decoding="async">
   {{ else }}

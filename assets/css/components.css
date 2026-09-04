@@ -31,6 +31,7 @@
      17  Accordion / FAQ
      18  Form and its states
      19  Breadcrumb, pagination, empty state
+     20  Prose               long-form copy inside .Content
    ========================================================================== */
 
 
@@ -211,7 +212,30 @@
   padding-block: .5rem;
 }
 .nav__link:hover { color: var(--text-primary); }
+
+/* Active section. Colour alone was not enough: --accent-soft against
+   --text-secondary is a beige next to a grey, and over the hero photograph it
+   disappeared entirely. The hairline does the work, the colour supports it. */
+.nav__link { position: relative; }
 .nav__link[aria-current="page"] { color: var(--accent-soft); }
+.nav__link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* In the drawer the links are full width, so a rule underneath reads as a
+   divider rather than as a state. A bar in the gutter reads as a state. */
+.nav__drawer .nav__link[aria-current="page"]::after {
+  left: calc(var(--s-4) * -1);
+  right: auto;
+  top: var(--s-3);
+  bottom: var(--s-3);
+  width: 2px;
+  height: auto;
+}
 
 .nav__cta { margin-left: var(--s-4); }
 
@@ -1198,3 +1222,103 @@ a.card:hover { border-color: var(--rule-accent); background: var(--surface-high)
 }
 .imprint h2:first-of-type { margin-top: var(--s-4); }
 .imprint p { max-width: 68ch; }
+
+
+/* ==========================================================================
+   20  PROSE
+   Consumed by: every archetype that renders .Content, plus the imprint and
+   privacy shortcodes.
+
+   The base rule is one line in base.css: a measure, and a uniform gap between
+   top-level children. That is correct for a page brief, which is four short
+   blocks, and wrong for finished copy, where a reader needs to see structure:
+   a heading has to sit closer to the text it introduces than to the paragraph
+   above it, and a list has to look like a list rather than like browser
+   defaults on a near-black ground.
+
+   Scoped entirely inside .prose so nothing here can leak into a component.
+   ========================================================================== */
+
+/* Headings. Smaller than the page-level scale: an h2 inside a 66ch column
+   competes with the hero if it keeps the display size. */
+.prose h2,
+.prose h3 { color: var(--text-primary); }
+
+.prose h2 {
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  line-height: var(--lh-heading);
+}
+.prose h3 { font-size: 1.12rem; }
+
+/* Asymmetric rhythm. The gap above a heading is larger than the gap below it,
+   so the heading binds to its own section. Overrides the uniform base gap. */
+.prose > h2 + *,
+.prose > h3 + * { margin-top: var(--s-4); }
+.prose > * + h2 { margin-top: var(--s-7); }
+.prose > * + h3 { margin-top: var(--s-6); }
+
+/* Lists. Markers in accent, so an unordered list reads as part of the system
+   rather than as an unstyled default. */
+.prose ul,
+.prose ol { padding-left: var(--s-5); }
+.prose li + li { margin-top: var(--s-3); }
+.prose li::marker { color: var(--accent); }
+.prose li > ul,
+.prose li > ol { margin-top: var(--s-3); }
+
+/* A list item that opens with a bold lead-in is the dominant pattern in this
+   copy. strong is already lifted to --text-primary in base.css. */
+.prose ol { counter-reset: none; }
+
+/* Tables. Rules only, no fills, matching the comparison table's restraint.
+   Wrapped so a wide table scrolls instead of forcing the page sideways. */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--size-small);
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  text-align: left;
+  padding: var(--s-3) var(--s-4) var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.prose th {
+  color: var(--text-primary);
+  font-weight: var(--weight-ui);
+  font-size: var(--size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--track-eyebrow);
+  border-bottom-color: var(--rule-strong);
+}
+
+/* Quotes. The full testimonial component is a separate block; this is the
+   inline case, a quotation inside running copy. */
+.prose blockquote {
+  border-left: 1px solid var(--rule-accent);
+  padding-left: var(--s-5);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--size-body-lg);
+  line-height: var(--lh-tight);
+}
+
+/* Code. Present for the builders site; harmless everywhere else. */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: .88em;
+  color: var(--accent-soft);
+}
+.prose pre {
+  background: var(--surface-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: var(--s-5);
+  overflow-x: auto;
+}
+.prose pre code { color: var(--text-secondary); }
+
+.prose hr { margin-block: var(--s-7); }

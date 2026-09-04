@@ -24,11 +24,19 @@
 
 <section class="hero{{ if not $img }} hero--atmos{{ end }}">
   {{ with $img }}
-  {{- $sm := .Resize "900x webp q72" -}}
-  {{- $lg := .Resize "1920x webp q76" -}}
+  {{/* Never upscale. Enlarging a master past its own width costs bytes and
+       adds blur, and every image in the mood library is 1376 wide. Quality is
+       high because the whole set is dark with fine gold detail, which is where
+       a low-quality encoder shows banding first. */}}
+  {{- $sm := .Resize (printf "%dx webp q82" (int (math.Min 900 .Width))) -}}
+  {{- $lg := .Resize (printf "%dx webp q86" (int (math.Min 1920 .Width))) -}}
+  {{/* Descriptors come from the rendered widths, never from the widths we asked
+       for. They differ whenever a master is narrower than the target, and a
+       srcset that overstates a width makes the browser pick the wrong file. A
+       master under 900px wide produces one candidate, not two identical ones. */}}
   <div class="hero__media">
     <img src="{{ $lg.RelPermalink }}"
-         srcset="{{ $sm.RelPermalink }} 900w, {{ $lg.RelPermalink }} 1920w"
+         srcset="{{ if lt $sm.Width $lg.Width }}{{ $sm.RelPermalink }} {{ $sm.Width }}w, {{ end }}{{ $lg.RelPermalink }} {{ $lg.Width }}w"
          sizes="100vw" width="{{ $lg.Width }}" height="{{ $lg.Height }}"
          alt="" fetchpriority="high" decoding="async">
   </div>
@@ -47,7 +55,15 @@
           {{ $site.primary_cta }}
           {{ partial "icon.html" (dict "name" "arrow-right" "class" "btn__arrow") }}
         </a>
-        <a class="btn btn--text" href="/philosophy/">Why we exist</a>
+        {{/* Secondary control, per site, from data/site.yaml. The page that
+             answers "why we exist" is /method/ on consulting, /about/ on the
+             group site, and absent on the signpost domain, so the target is
+             not hardcoded here. A site that sets no secondary_cta_url renders
+             the primary button alone rather than a link to a page it does not
+             have. */}}
+        {{ with $site.secondary_cta_url }}
+        <a class="btn btn--text" href="{{ . }}">{{ $site.secondary_cta | default "Why we exist" }}</a>
+        {{ end }}
       </div>
     </div>
   </div>
