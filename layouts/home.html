@@ -12,7 +12,10 @@
 {{ define "main" }}
 {{- $h := .Params.hero -}}
 
-{{/* 1. Hero. Falls back to the page title when no hero block is set. */}}
+{{/* 1. Hero. Falls back to the page title when no hero block is set, and to a
+      plain top-level `image` when there is no hero block to carry one. Only
+      consulting.com defines a full hero block; the rest of the family should not
+      have to invent one just to show a photograph. */}}
 {{ partial "hero.html" (dict
      "ctx"     .
      "eyebrow" (or (and $h $h.eyebrow) .Site.Params.tagline)
@@ -20,7 +23,7 @@
      "line2"   (and $h $h.line_2)
      "italic"  (and $h $h.line_2_italic)
      "lede"    (or (and $h $h.lede) .Description)
-     "image"   (and $h $h.image)) }}
+     "image"   (or (and $h $h.image) .Params.image)) }}
 
 {{/* 2. What this site holds. One card per top-level section, ordered by weight. */}}
 {{ $sections := where .Site.Sections "Params.hidden" "!=" true }}
